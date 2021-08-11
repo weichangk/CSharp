@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="01数据类型\" />
+    <Folder Include="数据类型\" />
   </ItemGroup>
 
 </Project>
