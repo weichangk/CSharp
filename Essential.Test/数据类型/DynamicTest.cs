@@ -18,5 +18,22 @@ namespace Essential.Test
             var ex = Assert.Throws<InvalidOperationException>(() => { _dynamicCls.T1(); });
             Output.WriteLine(ex.Message);
         }
+        [Fact]
+        public void T2()
+        {
+            var result = _dynamicCls.T2();
+            Output.WriteLine(result);
+        }
+
+        [Fact]
+        public void T3()
+        {
+            _dynamicCls.T3();
+        }
+        [Fact]
+        public void T4()
+        {
+            _dynamicCls.T4();
+        }
     }
 }
