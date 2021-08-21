@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#define PI
+#define PIPI
+
+using System;
 
 namespace Essential
 {
@@ -152,6 +151,33 @@ namespace Essential
         }
         #endregion
 
+        #endregion
+
+        #region 预处理指令
+        public string IFPreprocessorDirectives()
+        {
+#if (PI && !PIPI)
+            return "PI && !PIPI";
+#elif (!PI && PIPI)
+            return "!PI && PIPI";
+#elif (PI && PIPI)
+            return "PI && PIPI";
+#else
+            return "PI PIPI not defined";
+#endif
+            //return "PreprocessorDirectives";
+        }
+
+        public string WarningErrorPreprocessorDirectives()
+        {
+
+#if DEBUG && RELEASE
+#error "You've defined DEBUG and RELEASE simultaneously!"  
+#endif
+
+#warning "WarningErrorPreprocessorDirectives warning";
+            return "";
+        }
         #endregion
     }
 }
