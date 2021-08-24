@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Essential
 {
-    public class ClassCls
+    public partial class ClassCls
     {
         public const double PI = 3.1415926;
         public static int NextId = 42;
@@ -44,6 +44,11 @@ namespace Essential
             (nextId, consoleColor, str, str1) = (NextId, ConsoleColor, "", "");
         }
 
+        //实现分部方法
+        partial void PartialFunc()
+        {
+            System.Diagnostics.Debug.Write("this is Partial Func");
+;        }
 
     }
 }
