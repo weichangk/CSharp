@@ -35,5 +35,18 @@ namespace Essential.Test
             var result = _inheritanceCls.OverrideFuncTest();
             Output.WriteLine(result);
         }
+
+        [Fact]
+        public void NewKeyWordTest()
+        {
+            var result = _inheritanceCls.NewKeyWordTest();
+            Output.WriteLine(result);
+        }
+        [Fact]
+        public void NewKeyWordTest1()
+        {
+            var result = _inheritanceCls.NewKeyWordTest1();
+            Output.WriteLine(result);
+        }
     }
 }
