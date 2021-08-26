@@ -76,6 +76,53 @@ namespace Essential
 
             return $"{str1} {str2} {str3} {str4}";
         }
+
+
+        public string AbstractClassTest()
+        {
+            Animal animal = new Dog("小黄狗");
+            animal.Age = 3;
+            string wocao1 = animal.WoCao();
+            string eat1 = animal.Eat();
+
+            animal = new Cat("小花猫");
+            animal.Age = 2;
+            string wocao2 = animal.WoCao();
+            string eat2 = animal.Eat();
+
+
+            return $"{wocao1}{eat1}{Environment.NewLine}{wocao2}{eat2}";
+        }
+
+        public string UseIsTest()
+        {
+            Dog dog = new Dog("小黄狗") { Age = 2};
+            //使用is操作符进行模式匹配：狗是动物，狗可以转换为动物
+            if (dog is Animal animal && animal.Age >= 1)
+            {
+                return $"小黄狗是动物，它大于1岁了";
+            }
+            else
+            {
+                return "小黄狗不是动物";
+            }
+        }
+
+        public string UseSwitchTest(Animal animal)
+        {
+            //使用switch操作符进行模式匹配
+            switch (animal)
+            {
+                case null:
+                    return "null";
+                case Dog dog when dog.Age >=1:
+                    return $"{dog.WoCao()}{dog.Eat()}";
+                case Cat cat:
+                    return $"{cat.WoCao()}{cat.Eat()}";
+                default:
+                    return "什么鬼";
+            }
+        }
     }
 }
 
@@ -186,36 +233,56 @@ namespace Essential.Inheritance
 
     public abstract class Animal
     {
-        string _speciality;
-        public abstract string Name { get; set; }
+        protected string _name;
+        public abstract int Age { get; set; }
 
-        public Animal(string speciality)
+        public Animal(string name)
         {
-            _speciality = speciality;
+            _name = name;
         }
 
-        public virtual string SayWoCao()
+        public virtual string WoCao()
         {
             return "WoCao";
-        }
-        public virtual string SpecialityDescription()
-        {
-            return $"Its specialty is {_speciality}";
         }
 
         public abstract string Eat();
     }
     public class Dog : Animal
     {
-        public Dog(string speciality) : base(speciality)
+        public Dog(string name) : base(name)
         { 
         }
 
-        public override string Name { get; set; }
+        public override int Age { get; set; }
 
+        public override string WoCao()
+        {
+            return $"{_name} WoCao";
+        }
         public override string Eat()
         {
-            throw new NotImplementedException();
+            return $"吃了{Age}年的狗粮";
         }
+
+    }
+
+    public class Cat : Animal
+    {
+        public Cat(string name) : base(name)
+        {
+        }
+
+        public override int Age { get; set; }
+
+        public override string WoCao()
+        {
+            return $"{_name} WoCao";
+        }
+        public override string Eat()
+        {
+            return $"吃了{Age}年的猫粮";
+        }
+
     }
 }
