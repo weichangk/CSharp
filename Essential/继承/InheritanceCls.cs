@@ -123,6 +123,19 @@ namespace Essential
                     return "什么鬼";
             }
         }
+
+        public string AbstractEventTest()
+        {
+            Animal animal = new Dog("小黄狗");
+            animal.AbstractEvent += (object o, EventArgs e) => {
+                animal.AbstractEventStr += "小黄狗 吃饭; ";
+            };
+            animal.AbstractEvent += (object o, EventArgs e) => {
+                animal.AbstractEventStr += "小黄狗 睡觉; ";
+            };
+            animal.CallAbstractEvent();
+            return animal.AbstractEventStr;
+        }
     }
 }
 
@@ -233,12 +246,18 @@ namespace Essential.Inheritance
 
     public abstract class Animal
     {
+        public delegate string MyDelegate();
+        public string AbstractEventStr { get; set; }
+
         protected string _name;
         public abstract int Age { get; set; }
 
         public Animal(string name)
         {
             _name = name;
+            //对外公开的事件可以在类的内外部订阅，但只能在类内部触发调用。而抽象类中的抽象事件在抽象类内不能触发调用（由派生类重载后在派生类内部触发调用），可以抽象类中订阅，且订阅的方法在派生类触发事件时会调用得到。
+            //AbstractEvent(null, null);//抽象事件在抽象类中不能直接调用
+            AbstractEvent += (object o, EventArgs e) => { AbstractEventStr += "Animal AbstractEvent; "; };//抽象事件在抽象类中可以订阅（在+= 或-=的左边）
         }
 
         public virtual string WoCao()
@@ -247,6 +266,29 @@ namespace Essential.Inheritance
         }
 
         public abstract string Eat();
+
+        public event EventHandler MyEvent;
+
+        //抽象成员可以是事件
+        public abstract event EventHandler AbstractEvent;
+
+        public void hahaha()
+        {
+            Eat();
+            MyEvent?.Invoke(null, null);
+            //AbstractEvent(null, null);//抽象事件不能直接调用
+            AbstractEvent += (object o, EventArgs e) => { AbstractEventStr += "Animal AbstractEvent; "; };//抽象事件可以在+= 或-=的左边
+
+            F1 = () => { return ""; };
+        }
+
+        public virtual void CallAbstractEvent()
+        { 
+        }
+
+        public Func<string> F1;
+
+
     }
     public class Dog : Animal
     {
@@ -256,6 +298,8 @@ namespace Essential.Inheritance
 
         public override int Age { get; set; }
 
+        public override event EventHandler AbstractEvent;
+
         public override string WoCao()
         {
             return $"{_name} WoCao";
@@ -263,6 +307,10 @@ namespace Essential.Inheritance
         public override string Eat()
         {
             return $"吃了{Age}年的狗粮";
+        }
+        public override void CallAbstractEvent()
+        {
+            AbstractEvent(null, null);
         }
 
     }
@@ -274,6 +322,8 @@ namespace Essential.Inheritance
         }
 
         public override int Age { get; set; }
+
+        public override event EventHandler AbstractEvent;
 
         public override string WoCao()
         {

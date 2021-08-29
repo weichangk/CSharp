@@ -91,6 +91,7 @@ C#有几种类型非常简单，是其他所有类型的基础，它们称为预
     <p>
     数组合并了相同类型的对象，而元组合并了不同类型的对象。如：(string country, string capital, double gdp) zhongguo = ("China", "BeiJing", 555); NET Framework定义了8个泛型Tuple类(自.NET 4.0以来)和一个静态Tuple类，它们用作元组的工厂。元组用静态Tuple类的静态Create()方法创建。Create方法的泛型参数定义了要实例化的元组类型。不同的泛型Tuple类支持不同数量的元素。例如：Tuple<TI>包含一个元素, Tuple<T1, T2>包含两个元素，依此类推。如果元组包含的项超过8个，就可以使用带8个参数的Tuple类定义。最后一个模板参数是TRest，表示必须给它传递一个元组。这样就可以创建带任意个参数的元组了。C#7.0（.NET Framework 4.7）引入了 ValueTuple 结构，它是元组的值类型表示。是一个结构。ValueTuple是Tuple的扩展。Tuple好像不能创建具名项元组，且元组值只读。ValueTuple可以创建具名项元组，且元组值可修改。自从C#7.0引入元组语法后，匿名类型几乎就用不着了？？？两者区别？？？
     </p>
+8. 枚举
 
 #### 数据类型转换
 1. 显示转换

@@ -6,7 +6,9 @@ namespace Essential
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            string str = "Hello World!";
+            var admin = new {name = "weick", age = 18};
+            Console.WriteLine(str);
         }
     }
 }

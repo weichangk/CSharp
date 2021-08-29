@@ -79,6 +79,12 @@ namespace Essential.Test
             var result = _inheritanceCls.UseSwitchTest(animal);
             Output.WriteLine(result);
         }
-        
+
+        [Fact]
+        public void AbstractEventTest()
+        {
+            var result = _inheritanceCls.AbstractEventTest();
+            Output.WriteLine(result);
+        }
     }
 }
