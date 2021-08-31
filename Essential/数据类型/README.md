@@ -92,6 +92,14 @@ C#有几种类型非常简单，是其他所有类型的基础，它们称为预
     数组合并了相同类型的对象，而元组合并了不同类型的对象。如：(string country, string capital, double gdp) zhongguo = ("China", "BeiJing", 555); NET Framework定义了8个泛型Tuple类(自.NET 4.0以来)和一个静态Tuple类，它们用作元组的工厂。元组用静态Tuple类的静态Create()方法创建。Create方法的泛型参数定义了要实例化的元组类型。不同的泛型Tuple类支持不同数量的元素。例如：Tuple<TI>包含一个元素, Tuple<T1, T2>包含两个元素，依此类推。如果元组包含的项超过8个，就可以使用带8个参数的Tuple类定义。最后一个模板参数是TRest，表示必须给它传递一个元组。这样就可以创建带任意个参数的元组了。C#7.0（.NET Framework 4.7）引入了 ValueTuple 结构，它是元组的值类型表示。是一个结构。ValueTuple是Tuple的扩展。Tuple好像不能创建具名项元组，且元组值只读。ValueTuple可以创建具名项元组，且元组值可修改。自从C#7.0引入元组语法后，匿名类型几乎就用不着了？？？两者区别？？？
     </p>
 8. 枚举
+    <p>
+    枚举是可由开发者声明的值类型。枚举的关键特征是在编译时声明了一组具名常量值这使代码更易读。使用枚举值需要为其附加枚举名称前缀。枚举值实际作为整数常量实现，默认第一个枚举值是0，后续每一项都递增1，但可以显式地为枚举赋值。考虑使用默认32位整型作为枚举基础类型。只有出于互操作性或性能方面的考虑才使用较小的类型，只有创建标志(flag)数超过32个的标志枚举才使用较大的类型。
+    </p>
+
+    - 标志枚举/位枚举
+        <p>
+        开发者许多时候不仅希望枚举值独一无二，还希望能对其进行组合以表示复合值。C#标记枚举（Flags)：枚举类型是用于声明一组命名得常数得基本类型数据（值类型）。枚举值是互斥的。而位标记集合是一种由组合出现得元素形成得列表，通常设计为以“位或”运算组合新值；枚举类型则通常表达一种语义相对独立得数值集合。而以枚举类型来实现位标记集合是最完美得组合，简称位枚举。位标志枚举名称通常是复数，因为它的值代表一个标志(flags)的集合，使用按位OR操作符联接(join)枚举值，使用HasFlags()方法或按位AND操作符测试特定位是否存在。一个好习惯是在位标志枚举名中包含值为0的None成员。添加到复合值使用如：var fileAttributes = FileAttributes.ReadOnly | FileAttributes.Hidden;从复合值删除如：fileAttributes = fileAttributes & ~FileAttributes.ReadOnly;判断是否存在复合值中如：fileAttributes.HasFlag(FileAttributes.ReadOnly)或(fileAttributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly;
+        </p>
 
 #### 数据类型转换
 1. 显示转换
