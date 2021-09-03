@@ -9,7 +9,6 @@ namespace Essential
 {
     public class WellFormedCls
     {
-        private WeakReference Data;
 
         public override string ToString()
         {
@@ -214,30 +213,32 @@ namespace Essential
         /// 弱引用使用
         /// </summary>
         /// <returns></returns>
-        public string WeakReferences()
+        public string WeakReferencesTest()
         {
-            ProductSerialNumber p = GetData();
+            string ret = "";
+            ProductSerialNumber p = new ProductSerialNumber("foo", 10, 20);
+            WeakReference wk = new WeakReference(p);
 
-            return p.ProductSeries;
+            for (int i = 0; i < 10; i++)
+            {
+                p = GetData(wk);
+                ret = $"{ret}{p.GetHashCode()}{Environment.NewLine}";
+            }
+            return ret;
         }
-        public ProductSerialNumber GetData()
+        public ProductSerialNumber GetData(WeakReference wk)
         {
-            ProductSerialNumber data = (ProductSerialNumber)Data.Target;
+            ProductSerialNumber data;
 
-            if (data != null)
+            if (wk.IsAlive)
             {
-                return data;
+                data = wk.Target as ProductSerialNumber;
             }
-            else
+            else 
             {
-                // Load data
-                // ...
                 data = new ProductSerialNumber("foo", 10, 20);
-
-                // Create a weak reference
-                // to data for use later
-                Data.Target = data;
             }
+
             return data;
         }
     }
@@ -302,6 +303,9 @@ namespace Essential
         }
 
     }
+
+
+
 
 
     public class ProductSerialNumberBase
@@ -387,5 +391,61 @@ namespace Essential
 
 
 
+    }
+
+
+
+
+
+
+    public class FinalizerTest : IDisposable
+    {
+        /// <summary>
+        /// 是否已释放资源的标志
+        /// </summary>
+        bool isDisposed = false; 
+
+        ~FinalizerTest()//由垃圾回收器调用，释放非托管资源
+        {
+            Dispose(false);// 释放非托管资源
+        }
+
+        #region IDisposable Members
+        /// <summary>
+        /// 由类的使用者在外部显示调用，释放类资源
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);// 释放托管和非托管资源
+
+            //阻止GC把该对象放入终结器队列
+            //将对象从垃圾回收器链表中移除，
+            //从而在垃圾回收器工作时，只释放托管资源，而不执行此对象的析构函数
+            //避免了一定要等待终结队列处理完毕才能清理资源的限制。
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
+
+        //参数为true表示释放所有资源，只能由使用者调用
+        //参数为false表示释放非托管资源，只能由垃圾回收器自动调用
+        //如果子类有自己的非托管资源，可以重载这个函数，添加自己的非托管资源的释放
+        //但是要记住，重载此函数必须保证调用基类的版本，以保证基类的资源正常释放
+        protected virtual void Dispose(bool isDisposing)
+        {
+            if(!isDisposed)// 如果资源未释放 这个判断主要用了防止对象被多次释放
+            {
+                if (isDisposing)
+                {
+
+                    //释放托管资源
+
+                }
+
+
+                //释放非托管资源
+            }
+            isDisposed = true;
+        }
     }
 }

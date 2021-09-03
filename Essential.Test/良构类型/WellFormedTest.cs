@@ -69,5 +69,12 @@ namespace Essential.Test
             var result = _wellFormedCls.OperatorTest();
             Output.WriteLine(result);
         }
+
+        [Fact]
+        public void WeakReferencesTest()
+        {
+            var result = _wellFormedCls.WeakReferencesTest();
+            Output.WriteLine(result);
+        }
     }
 }
