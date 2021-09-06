@@ -76,5 +76,11 @@ namespace Essential.Test
             var result = _wellFormedCls.WeakReferencesTest();
             Output.WriteLine(result);
         }
+
+        [Fact]
+        public void LazyLoadTest()
+        {
+            _wellFormedCls.LazyLoadTest();
+        }
     }
 }

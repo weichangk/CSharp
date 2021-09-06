@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -209,6 +210,8 @@ namespace Essential
             return ret;
         }
 
+
+
         /// <summary>
         /// 弱引用使用
         /// </summary>
@@ -241,13 +244,26 @@ namespace Essential
 
             return data;
         }
+
+
+
+        public void LazyLoadTest()
+        {
+            BlogUser blogUser = new BlogUser(1);
+            Debug.WriteLine("blogUser has been initialized");
+            foreach (var article in blogUser.Articles)
+            {
+                Debug.WriteLine(article.Title);
+            }
+        }
+
     }
 
 
 
 
 
-
+    #region 重写Equals() GetHashCode()
     public struct Coordinate : IEquatable<ValueType>
     {
         public Coordinate(string longitude, int latitude)
@@ -305,9 +321,6 @@ namespace Essential
     }
 
 
-
-
-
     public class ProductSerialNumberBase
     {
         public ProductSerialNumberBase(string productSeries, int model, long id)
@@ -324,7 +337,7 @@ namespace Essential
 
     public class ProductSerialNumber : ProductSerialNumberBase, IEquatable<ProductSerialNumber>
     {
-        public ProductSerialNumber(string productSeries, int model, long id):base(productSeries, model, id)
+        public ProductSerialNumber(string productSeries, int model, long id) : base(productSeries, model, id)
         {
         }
         public bool ValueEquals(ProductSerialNumber obj)
@@ -376,34 +389,19 @@ namespace Essential
         {
             return Equals(obj as ProductSerialNumber);
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
+    #endregion
 
 
 
-
-
+    #region 终结器
     public class FinalizerTest : IDisposable
     {
         /// <summary>
         /// 是否已释放资源的标志
         /// </summary>
-        bool isDisposed = false; 
+        bool isDisposed = false;
 
         ~FinalizerTest()//由垃圾回收器调用，释放非托管资源
         {
@@ -433,7 +431,7 @@ namespace Essential
         //但是要记住，重载此函数必须保证调用基类的版本，以保证基类的资源正常释放
         protected virtual void Dispose(bool isDisposing)
         {
-            if(!isDisposed)// 如果资源未释放 这个判断主要用了防止对象被多次释放
+            if (!isDisposed)// 如果资源未释放 这个判断主要用了防止对象被多次释放
             {
                 if (isDisposing)
                 {
@@ -448,4 +446,45 @@ namespace Essential
             isDisposed = true;
         }
     }
+    #endregion
+
+
+
+    #region 延迟加载
+
+    public class BlogUser
+    {
+        Lazy<List<Article>> _articles;
+        public int Id { get; private set; }
+        public List<Article> Articles 
+        {
+            get
+            {
+                return _articles.Value;
+            }
+        }
+        public BlogUser(int id)
+        {
+            this.Id = id;
+            _articles = new Lazy<List<Article>>(() => new List<Article> {
+                                                            new Article{Id=1,Title="Lazy Load",PublishDate=DateTime.Parse("2011-4-20")},
+                                                            new Article{Id=2,Title="Delegate",PublishDate=DateTime.Parse("2011-4-21")},
+                                                            new Article{Id=3,Title="Event",PublishDate=DateTime.Parse("2011-4-22")},
+                                                            new Article{Id=4,Title="Thread",PublishDate=DateTime.Parse("2011-4-23")}
+                                                            });
+            Debug.WriteLine("BlogUser Initializer");
+        }
+    }
+    public class Article
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public DateTime PublishDate { get; set; }
+
+        public Article()
+        {
+            Debug.WriteLine($"Article {Id} Initalizer");
+        }
+    }
+    #endregion
 }
