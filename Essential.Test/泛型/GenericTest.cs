@@ -16,9 +16,21 @@ namespace Essential.Test
         }
 
         [Fact]
-        public void GenericClsTest()
+        public void PerformanceTest()
         {
-            GenericCls.Test();
+            GenericCls.PerformanceTest();
+        }
+
+        [Fact]
+        public void BinarySearchTest()
+        {
+            GenericCls.BinarySearchTest();
+        }
+
+        [Fact]
+        public void OpenTypesTest()
+        {
+            GenericCls.OpenTypesTest();
         }
     }
 }

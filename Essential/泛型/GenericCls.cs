@@ -10,12 +10,20 @@ namespace Essential
 {
     public class GenericCls
     {
-        public static void Test()
+        public static void PerformanceTest()
         {
             Performance.ValueTypePerfTest();
             Performance.ReferenceTypePerfTest();
+        }
 
+        public static void BinarySearchTest()
+        {
+            ArrayBinarySearchCls.BinarySearchTest();
+        }
 
+        public static void OpenTypesTest()
+        {
+            OpenTypes.Test();
         }
     }
 
@@ -121,6 +129,170 @@ namespace Essential
                 GC.Collect();//强制对所有代进行及时垃圾回收
                 GC.WaitForPendingFinalizers();//挂起当前线程，直到处理终结器队列的线程清空该队列为止
                 GC.Collect();
+            }
+        }
+    }
+    #endregion
+
+
+    #region Array.BinarySearch<T> 二分搜索算法
+    class ArrayBinarySearchCls
+    {
+        public static void BinarySearchTest()
+        {
+            Byte[] byteArray = new Byte[] { 5, 1, 4, 2, 3 };
+
+            Int32 i = Array.BinarySearch<Byte>(byteArray, 2);
+            Debug.WriteLine(i);   // -1
+
+            Array.Sort<Byte>(byteArray);
+
+            // 调用 Byte[] 的二分搜索算法。BinarySearch是二进制搜索算法，复杂度为O(log n)，效率更高，但需要先排序。
+            i = Array.BinarySearch<Byte>(byteArray, 2);
+            Debug.WriteLine(i);   // 1
+        }
+    }
+
+
+    #endregion
+
+
+    #region 开放类型
+    internal static class OpenTypes
+    {
+        public static void Test()
+        {
+            Object o = null;
+
+            // Dictionary<,> is an open type having 2 type parameters
+            Type t = typeof(Dictionary<,>);
+
+            // Try to create an instance of this type (fails)
+            o = CreateInstance(t);
+            Debug.WriteLine("------");
+
+            // DictionaryStringKey<> is an open type having 1 type parameter
+            t = typeof(DictionaryStringKey<>);
+
+            // Try to create an instance of this type (fails)
+            o = CreateInstance(t);
+            Debug.WriteLine("------");
+
+            // DictionaryStringKey<Guid> is a closed type
+            t = typeof(DictionaryStringKey<Guid>);
+
+            // Try to create an instance of this type (succeeds) 
+            o = CreateInstance(t);
+
+            // Prove it actually worked
+            Debug.WriteLine("Object type=" + o.GetType());
+        }
+
+        private static Object CreateInstance(Type t)
+        {
+            Object o = null;
+            try
+            {
+                o = Activator.CreateInstance(t);
+                Debug.WriteLine($"Created instance of {t}");
+            }
+            catch (ArgumentException e)
+            {
+                Debug.WriteLine(e.Message);
+            }
+            return o;
+        }
+
+        // 一部分指定的开放类型
+        internal sealed class DictionaryStringKey<TValue> :
+           Dictionary<String, TValue>
+        {
+        }
+    }
+    #endregion
+
+    #region 泛型类型继承
+    internal static class GenericInheritance
+    {
+        public static void Go()
+        {
+            SameDataLinkedList();
+            DifferentDataLinkedList();
+        }
+
+        private static void SameDataLinkedList()
+        {
+            Node<Char> head = new Node<Char>('C');
+            head = new Node<Char>('B', head);
+            head = new Node<Char>('A', head);
+            Console.WriteLine(head.ToString());
+        }
+
+        private static void DifferentDataLinkedList()
+        {
+            Node head = new TypedNode<Char>('.');
+            head = new TypedNode<DateTime>(DateTime.Now, head);
+            head = new TypedNode<String>("Today is ", head);
+            Console.WriteLine(head.ToString());
+        }
+
+        private sealed class Node<T>
+        {
+            public T m_data;
+            public Node<T> m_next;
+
+            public Node(T data) : this(data, null)
+            {
+            }
+
+            public Node(T data, Node<T> next)
+            {
+                m_data = data; m_next = next;
+            }
+
+            public override String ToString()
+            {
+                return m_data.ToString() + ((m_next != null) ? m_next.ToString() : null);
+            }
+        }
+
+        private class Node
+        {
+            protected Node m_next;
+
+            public Node(Node next)
+            {
+                m_next = next;
+            }
+        }
+
+        private sealed class TypedNode<T> : Node
+        {
+            public T m_data;
+
+            public TypedNode(T data): this(data, null)
+            {
+            }
+
+            public TypedNode(T data, Node next): base(next)
+            {
+                m_data = data;
+            }
+
+            public override String ToString()
+            {
+                return m_data.ToString() + ((m_next != null) ? m_next.ToString() : null);
+            }
+        }
+
+        private sealed class GenericTypeThatRequiresAnEnum<T>
+        {
+            static GenericTypeThatRequiresAnEnum()
+            {
+                if (!typeof(T).IsEnum)
+                {
+                    throw new ArgumentException("T must be an enumerated type");
+                }
             }
         }
     }
